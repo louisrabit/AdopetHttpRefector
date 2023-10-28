@@ -2,10 +2,12 @@
 using Alura.Adopet.Console.Servicos;
 
 
-
+//***1
 // Vamos criar um novo objecto httpclientpet
 // Estamos a compartilhar o mesmo objecto para os dois comandos 
-var httpClientPet = new HttpClientPet();
+
+//2.1 *** vamos usart a classe que foi criada  --> damos o nome adopet - nao faz diferença 
+var httpClientPet = new HttpClientPet(new HttpClientFactory().CreateClient("adopet") );
 
 
 
