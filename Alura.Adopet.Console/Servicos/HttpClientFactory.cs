@@ -11,7 +11,7 @@ namespace Alura.Adopet.Console.Servicos
   
     // ****2 
     // IHttpCLientFactory --> Interface que tem conteudo do HttpClient 
-    internal class HttpClientFactory : IHttpClientFactory
+    public class HttpClientFactory : IHttpClientFactory
     {
 
         private string url = "http://localhost:5057";

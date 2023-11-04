@@ -3,6 +3,7 @@ using Alura.Adopet.Console.Servicos;
 using Moq;
 using Moq.Protected;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Alura.Adopet.Testes
 {
@@ -86,16 +87,32 @@ namespace Alura.Adopet.Testes
             Assert.NotEmpty(lista);
         }
 
-        //[Fact]
-        //public async Task QuandoAPIForaDeveRetornarUmaExcecao()
-        //{
-        //    //Arrange
-        //    var clientePet = new HttpClientPet(uri:"http://localhost:1111");
+        [Fact]
+        public async Task QuandoAPIForaDeveRetornarUmaExcecao()
+        {
+            //Arrange
+            var handlerMock = new Mock<HttpMessageHandler>();
 
-        //    //Act+Assert
-        //    await Assert.ThrowsAnyAsync<Exception>(()=> clientePet.ListPetsAsync());
+            handlerMock
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>(
+                  "SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>())
+               .ThrowsAsync(new SocketException());
 
-        //}
+            //Arrange
+            //3.1 -->  temos de mockar o httpclient e o comportamento padrao 
+            var httpclient = new Mock<HttpClient>(MockBehavior.Default, handlerMock.Object);
+            httpclient.Object.BaseAddress = new Uri("http://localhost:5057");
+
+            //// dentro fo mock nos temnos um objecto que representa o Httpclient 
+            var clientePet = new HttpClientPet(httpclient.Object);
+
+            //Act+Assert
+            await Assert.ThrowsAnyAsync<Exception>(() => clientePet.ListPetsAsync());
+
+        }
 
     }
 }
